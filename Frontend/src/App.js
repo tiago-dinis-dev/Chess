@@ -1,8 +1,8 @@
 import './App.css';
 import React from 'react';
-import ChessGame from './components/Chessboard';
+import ChessGame from './components/Game.js';
 
-function App() {
+export default function App() {
   return (
     <div className="App">
       <header className="App-header">
@@ -14,5 +14,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
