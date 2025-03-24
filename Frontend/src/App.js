@@ -4,11 +4,14 @@ import ChessGame from './components/Chessboard';
 
 function App() {
   return (
-      <div className="App">
-        <header className="App-header">
-          <ChessGame />
-        </header>
+    <div className="App">
+      <header className="App-header">
+        <h1>Chess Game</h1>  
+      </header>
+      <div className="App-body">
+        <ChessGame />
       </div>
+    </div>
   );
 }
 

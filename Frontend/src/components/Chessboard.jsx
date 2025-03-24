@@ -1,12 +1,12 @@
 import React from 'react';
-import Chessboard from 'chessboardjsx';
+import { Chessboard } from 'react-chessboard';
 
 function ChessGame() {
   return (
-    <div>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
       <Chessboard
         position="start"
-        width={320}
+        boardWidth={520}
       />
     </div>
   );
