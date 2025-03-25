@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'django.contrib.admin',
     'rest_framework',
     'chess',
 ]
@@ -56,7 +55,7 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-ROOT_URLCONF = 'Chess.urls'
+ROOT_URLCONF = 'chess.urls'
 
 TEMPLATES = [
     {
@@ -74,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Chess.wsgi.application'
+WSGI_APPLICATION = 'chess.wsgi.application'
 
 
 # Database

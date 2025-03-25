@@ -1,7 +1,11 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from rest_framework import viewsets
+from .models import ChessGame, Move
+from .serializers import ChessGameSerializer, MoveSerializer
 
-@api_view(['POST'])
-def handle_moves(request):
-    move = request.data.get('move')
-    return Response({'status': 'Move accpeted'})
+class ChessGameViewSet(viewsets.ModelViewSet):
+    queryset = ChessGame.objects.all().order_by('-created_at')
+    serializer_class = ChessGameSerializer
+
+class MoveViewSet(viewsets.ModelViewSet):
+    queryset = Move.objects.all()
+    serializer_class = MoveSerializer
