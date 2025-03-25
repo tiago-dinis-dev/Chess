@@ -1,11 +1,21 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import { Chessboard } from 'react-chessboard';
 import { Chess } from 'chess.js';
+import { startGame, postMove, updateStatus } from '../FetchData';
 
 function ChessGame() {
   const chess = useMemo(() => new Chess(), []);
   const [fen, setFen] = useState(chess.fen());
   const [over, setOver] = useState("");
+  const [gameId, setGameId] = useState(null);
+
+  useEffect(() => {
+    async function initializeGame() {
+      const data = await startGame('Player 1', 'Player 2');
+      setGameId(data.game_id);
+    }
+    initializeGame();
+  }, []);
 
   function onDrop(sourceSquare, targetSquare) {
     const moveData = {
@@ -21,31 +31,36 @@ function ChessGame() {
   }
 
   const makeAMove = useCallback(
-    (move) => {
+    async (move) => {
       try {
         const result = chess.move(move);
         setFen(chess.fen());
 
-        console.log("over, checkmate", chess.isGameOver(), chess.isCheckmate());
+        if (result) {
+          await postMove(gameId, chess.history().length, result.san);
+        }
 
-        if (chess.isGameOver){
-          if(chess.isCheckmate()){
+        if (chess.isGameOver()) {
+          let status = '';
+          if (chess.isCheckmate()) {
+            status = 'checkmate';
             setOver(`Checkmate! ${chess.turn() === "w" ? "black" : "white"} wins!`);
-          }
-          else if (chess.isDraw()){
+          } else if (chess.isDraw()) {
+            status = 'draw';
             setOver("Draw!");
-          }
-          else {
+          } else {
+            status = 'stalemate';
             setOver("Stalemate!");
           }
+          await updateStatus(gameId, status);
         }
 
         return result;
-      } catch(e) {
+      } catch (e) {
         return null;
       }
     },
-    [chess]
+    [chess, gameId]
   );
 
   return (

@@ -15,6 +15,10 @@ class ChessGame(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def update_status(self, new_status):
+        self.status = new_status
+        self.save()
+
 class Move(models.Model):
     game = models.ForeignKey(ChessGame, on_delete=models.CASCADE, related_name='moves')
     move_number = models.IntegerField()

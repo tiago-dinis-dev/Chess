@@ -8,4 +8,6 @@ router.register(r'moves', MoveViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('games/start/', ChessGameViewSet.as_view({'post': 'start_game'})),
+    path('games/<int:pk>/update_status/', ChessGameViewSet.as_view({'patch': 'update_status'})),
 ]
