@@ -1,8 +1,11 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.views import APIView
 from .models import ChessGame, Move
 from .serializers import ChessGameSerializer, MoveSerializer
+from .ai_logic import select_best_move
+import chess
 
 class ChessGameViewSet(viewsets.ModelViewSet):
     queryset = ChessGame.objects.all().order_by('-created_at')
@@ -24,3 +27,15 @@ class ChessGameViewSet(viewsets.ModelViewSet):
 class MoveViewSet(viewsets.ModelViewSet):
     queryset = Move.objects.all()
     serializer_class = MoveSerializer
+
+class AIMoveView(APIView):
+
+    def post(self, request, *args, **kwargs):
+
+        board_state = request.data.get('board')
+        board = chess.Board(board_state)
+        
+        best_move = select_best_move(board)
+        
+        board.push(best_move)
+        return Response({'board': board.fen(), 'best_move': best_move.uci()})

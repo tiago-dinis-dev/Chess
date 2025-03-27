@@ -23,3 +23,10 @@ export const updateStatus = async (gameId, status) => {
     status: status
   });
 };
+
+export const getAIMove = async (fen) => {
+  const response = await axios.post(`${BASE_URL}/ai/move/`, {
+    board: fen
+  });
+  return response.data;
+};

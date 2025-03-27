@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import { Chessboard } from 'react-chessboard';
 import { Chess } from 'chess.js';
-import { startGame, postMove, updateStatus } from '../FetchData';
+import { startGame, postMove, updateStatus, getAIMove } from '../FetchData';
 
 function ChessGame() {
   const chess = useMemo(() => new Chess(), []);
@@ -63,6 +63,16 @@ function ChessGame() {
     [chess, gameId]
   );
 
+  const handleAIMove = async () => {
+    try {
+      const data = await getAIMove(fen);
+      chess.move(data.best_move);
+      setFen(chess.fen());
+    } catch (error) {
+      console.error("Error generating AI move:", error);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
       <Chessboard
@@ -72,6 +82,9 @@ function ChessGame() {
         draggable={true}
         showBoardNotation={true}
       />
+      <button onClick={handleAIMove} style={{ marginTop: '20px' }}>
+        AI Move
+      </button>
     </div>
   );
 }
