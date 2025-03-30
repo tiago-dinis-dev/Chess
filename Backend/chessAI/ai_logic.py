@@ -1,25 +1,45 @@
 import chess  
 import random
 
-# Simple evaluation function for a position (this will get more complex)
+# Enhanced evaluation function for a position
 def evaluate_board(board):
     """Evaluates the current board position and returns a score."""
-    # Here we could use material count as a basic evaluation
     material_values = {
         chess.PAWN: 1,
         chess.KNIGHT: 3,
-        chess.BISHOP: 3,
+        chess.BISHOP: 3.5,
         chess.ROOK: 5,
         chess.QUEEN: 9,
     }
     
+    # Positional values for pawns (example, can be expanded for other pieces)
+    pawn_position_values = [
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
+        0.1, 0.1, 0.2, 0.3, 0.3, 0.2, 0.1, 0.1,
+        0.05, 0.05, 0.1, 0.25, 0.25, 0.1, 0.05, 0.05,
+        0, 0, 0, 0.2, 0.2, 0, 0, 0,
+        0.05, -0.05, -0.1, 0, 0, -0.1, -0.05, 0.05,
+        0.05, 0.1, 0.1, -0.2, -0.2, 0.1, 0.1, 0.05,
+        0, 0, 0, 0, 0, 0, 0, 0
+    ]
+
     score = 0
-    for piece in board.piece_map().values():
+    for square, piece in board.piece_map().items():
+        piece_value = material_values.get(piece.piece_type, 0)
         if piece.color == chess.WHITE:
-            score += material_values.get(piece.piece_type, 0)
+            score += piece_value
+            if piece.piece_type == chess.PAWN:
+                score += pawn_position_values[square]
         else:
-            score -= material_values.get(piece.piece_type, 0)
+            score -= piece_value
+            if piece.piece_type == chess.PAWN:
+                score -= pawn_position_values[chess.square_mirror(square)]
     
+    # Penalize repetitive moves
+    if board.is_repetition(2):
+        score -= 0.5 if board.turn == chess.WHITE else -0.5
+
     return score
 
 # Minimax algorithm (basic version)
